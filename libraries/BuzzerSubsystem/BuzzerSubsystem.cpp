@@ -1,3 +1,8 @@
+/////////////////////////////////////////////////
+// Modified from:     www.elegoo.com (2017.12.9)
+// Modified for:      Team Voltage 386
+// Date:              2025/05/16
+/////////////////////////////////////////////////
 #include <BuzzerSubsystem.h>
 
 // <<constructor>>
@@ -8,7 +13,7 @@ BuzzerSubsystem::BuzzerSubsystem()
 
   buzzState = LOW;
 
-  myPort = 12; // the pin of the active buzzer
+  myPort = 13; // the pin of the active buzzer
 
   soundDuration = 500;
   iBuzz = 0;

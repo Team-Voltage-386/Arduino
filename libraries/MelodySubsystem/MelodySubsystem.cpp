@@ -1,3 +1,8 @@
+/////////////////////////////////////////////////
+// Modified from:     www.elegoo.com (2017.12.9)
+// Modified for:      Team Voltage 386
+// Date:              2025/05/16
+/////////////////////////////////////////////////
 #include <MelodySubsystem.h>
 
 // <<constructor>>
@@ -6,7 +11,7 @@ MelodySubsystem::MelodySubsystem()
 	prevMillis = 0;
 	currMillis = 0;
 
-	myPort = 12; // the pin of the active Melody
+	myPort = 13; // the pin of the active Melody
 
 	// notes in the melody:
 	melody[0] = NOTE_C5;

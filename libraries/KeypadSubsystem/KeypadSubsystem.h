@@ -1,3 +1,8 @@
+/////////////////////////////////////////////////
+// Modified from:     www.elegoo.com (2017.12.9)
+// Modified for:      Team Voltage 386
+// Date:              2025/05/16
+/////////////////////////////////////////////////
 #ifndef KEYPADSUBSYSTEM_H
 #define KEYPADSUBSYSTEM_H
 
@@ -7,7 +12,6 @@
 #define ROWS 4
 #define COLS 4
 
-// class KeypadSubsystem
 class KeypadSubsystem
 {
 public:
