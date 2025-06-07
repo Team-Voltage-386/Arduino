@@ -50,6 +50,11 @@ LedMatrixSubsystem::LedMatrixSubsystem()
   delaytime1=500;
   delaytime2=50;
 
+  prevMillis = 0;
+  currMillis = 0;
+
+  currentValue = CLR;
+  indexOfValue = 0;
 }
 
 /*
@@ -235,6 +240,44 @@ void LedMatrixSubsystem::writeVoltageMatrix() {
   delay(delaytime1);
 }
 
+void LedMatrixSubsystem::updateToNextValue()
+{
+  // Increment the character index
+  indexOfValue++;
+  
+  // If we reach the end of the characters, loop back to the start
+  if (indexOfValue >= 17) {
+    indexOfValue = 0;
+  }
+
+  // Set the current value to the next character
+  switch (indexOfValue) {
+    case 0: currentValue = T; break;
+    case 1: currentValue = E; break;
+    case 2: currentValue = A; break;
+    case 3: currentValue = M; break;
+    case 4: currentValue = CLR; break;
+    case 5: currentValue = V; break;
+    case 6: currentValue = O; break;
+    case 7: currentValue = L; break;
+    case 8: currentValue = T; break;
+    case 9: currentValue = A; break;
+    case 10: currentValue = G; break;
+    case 11: currentValue = E; break;
+    case 12: currentValue = CLR; break;
+    case 13: currentValue = N3; break;
+    case 14: currentValue = N8; break;
+    case 15: currentValue = N6; break;
+    case 16: currentValue = CLR; break;
+    default: currentValue = LedMatrixSubsystem::CLR; break; // Default case to avoid uninitialized access
+  }
+}
+
+void LedMatrixSubsystem::displayCurrentValue()
+{
+  displayValue(currentValue);
+}
+
 // Call this in setup() function
 void LedMatrixSubsystem::setup()
 {
@@ -252,9 +295,19 @@ void LedMatrixSubsystem::setup()
 // Call this in loop() function
 void LedMatrixSubsystem::loop()
 {
-  writeVoltageMatrix();
-  //writeArduinoOnMatrix();
-  //rows();
-  //columns();
-  //single();
+  // If you uncomment this line, the led matrix subsystem will never let go
+  //writeVoltageMatrix();
+
+  // save the current ms step count
+  currMillis = millis();
+
+  // if curr - prev is greater or equal to blink interval, blink
+  if (currMillis - prevMillis >= delaytime1)
+  {
+    prevMillis = currMillis;
+    updateToNextValue();
+  }
+
+  //display the value
+  displayCurrentValue();
 }
