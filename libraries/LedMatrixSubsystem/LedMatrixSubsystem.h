@@ -12,9 +12,21 @@
 class LedMatrixSubsystem
 {
 public:
-  void updateToNextValue();
+  enum pacmanDirection {
+    RIGHT,
+    LEFT,
+    UP,
+    DOWN
+  };
+
+  enum matrixOutput {
+    VOLTAGE,
+    PACMAN
+  };  
+
+  void updateToNextTeamVoltage();
+  void displayCurrentTeamVoltage();
   void displayValue(const unsigned char value[]);
-  void displayCurrentValue();
   LedMatrixSubsystem();
   void writeArduinoOnMatrix();
   void rows();
@@ -23,6 +35,13 @@ public:
   void writeVoltageMatrix();
   void setup();
   void loop();
+
+  void LedMatrixSubsystem::setPacmanDirection(LedMatrixSubsystem::pacmanDirection direction);
+  void setPacmanIsMoving(bool isMoving);
+  void movePacman();
+
+  void setMatrixOutput(matrixOutput output);
+  void nextMatrixOutput();
 
 private:
   /*
@@ -92,6 +111,32 @@ private:
   static const unsigned char N9[];
   static const unsigned char ALL[];
 
+  pacmanDirection myPacmanDirection;
+  unsigned int myPacmanIndex;
+  bool myPacmanIsMoving;
+
+  //RIGHT
+  static const unsigned char LedMatrixSubsystem::PACMAN_R0[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_R1[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_R2[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_R3[];
+  //LEFT
+  static const unsigned char LedMatrixSubsystem::PACMAN_L0[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_L1[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_L2[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_L3[];
+  //UP
+  static const unsigned char LedMatrixSubsystem::PACMAN_U0[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_U1[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_U2[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_U3[];
+  //DOWN
+  static const unsigned char LedMatrixSubsystem::PACMAN_D0[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_D1[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_D2[];
+  static const unsigned char LedMatrixSubsystem::PACMAN_D3[];
+
+  matrixOutput myMatrixOutput;
 };
 
 #endif

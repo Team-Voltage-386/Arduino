@@ -39,14 +39,36 @@ char keypadKey;
 void loop()
 {
   m_blink.loop();  // execute the blink loop
-  m_serial.loop(); // execute the serial loop
   m_ledmat.loop(); // execute the LED matrix loop
   m_keypad.loop(); // execute the keypad loop
 
   joystickData = m_joystick.getData(); // get the joystick data
-  m_serial.setJoystickData(joystickData.button, joystickData.x, joystickData.y); // print the joystick data to serial
+
+  if (joystickData.x > 750) {
+    m_ledmat.setPacmanIsMoving(true); // set pacman is moving to true
+    m_ledmat.setPacmanDirection(LedMatrixSubsystem::DOWN); // set pacman direction
+  } else if (joystickData.x < 250) {
+    m_ledmat.setPacmanIsMoving(true); // set pacman is moving to true
+    m_ledmat.setPacmanDirection(LedMatrixSubsystem::UP); // set pacman direction
+  } else if (joystickData.y > 750) {
+    m_ledmat.setPacmanIsMoving(true); // set pacman is moving to true
+    m_ledmat.setPacmanDirection(LedMatrixSubsystem::LEFT); // set pacman direction
+  } else if (joystickData.y < 250) {
+    m_ledmat.setPacmanIsMoving(true); // set pacman is moving to true
+    m_ledmat.setPacmanDirection(LedMatrixSubsystem::RIGHT); // set pacman direction
+  }
+  else {
+    m_ledmat.setPacmanIsMoving(false); // set pacman is moving to false
+  }
+
+  if(joystickData.button == 0) {
+    m_ledmat.nextMatrixOutput();
+  }
 
   m_joystick.loop(); // execute the joystick loop
+
+  m_serial.setJoystickData(joystickData.button, joystickData.x, joystickData.y); // print the joystick data to serial
+  m_serial.loop(); // execute the serial loop
 
   //m_buzzer.loop();  //execute the buzzer loop
   //m_melody.loop(); //execute the melody loop
