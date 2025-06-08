@@ -20,6 +20,8 @@ JoystickSubsystem m_joystick = JoystickSubsystem(); // Create joystick subsystem
 //BuzzerSubsystem m_buzzer = BuzzerSubsystem(12); //Create buzzer on port 12
 //MelodySubsystem m_melody = MelodySubsystem(12, 500); //Create melody on port 12 w/ 1000 duration
 
+JoystickSubsystem::JoystickData joystickData;
+
 void setup()
 {
   m_blink.setup();  // setup the LED blink subsystem
@@ -40,7 +42,12 @@ void loop()
   m_serial.loop(); // execute the serial loop
   m_ledmat.loop(); // execute the LED matrix loop
   m_keypad.loop(); // execute the keypad loop
+
+  joystickData = m_joystick.getData(); // get the joystick data
+  m_serial.setJoystickData(joystickData.button, joystickData.x, joystickData.y); // print the joystick data to serial
+
   m_joystick.loop(); // execute the joystick loop
+
   //m_buzzer.loop();  //execute the buzzer loop
   //m_melody.loop(); //execute the melody loop
 

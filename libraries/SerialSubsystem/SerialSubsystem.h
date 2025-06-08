@@ -17,11 +17,21 @@ public:
   void setup();
   void loop();
   void printKey(char key);
+  void setJoystickData(bool button, int x, int y);
+  void printJoystickData();
 
 private:
   char ch;
   unsigned int baudRate;
   unsigned int chInt;
+
+  unsigned long prevMillis;
+  unsigned long currMillis;  
+  unsigned long updateInterval;
+
+  bool myButton;
+  unsigned int myX;
+  unsigned int myY;  
 };
 
 #endif

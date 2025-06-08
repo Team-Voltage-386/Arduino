@@ -6,10 +6,25 @@
 #include <SerialSubsystem.h>
 
 // <<constructor>>
-SerialSubsystem::SerialSubsystem() { baudRate = 9600; }
+SerialSubsystem::SerialSubsystem() { 
+  baudRate = 9600; 
+
+  myButton = false;
+  myX = 0;  
+  myY = 0;
+
+  prevMillis = 0;
+  currMillis = 0;
+  updateInterval = 1000; // Default update interval
+}
 
 // <<constructor>>
-SerialSubsystem::SerialSubsystem(unsigned int baud) { baudRate = baud; }
+SerialSubsystem::SerialSubsystem(unsigned int baud) { 
+  baudRate = baud; 
+  prevMillis = 0;
+  currMillis = 0;
+  updateInterval = 1000; // Default update interval
+}
 
 // Call this in setup() function
 void SerialSubsystem::setup()
@@ -39,10 +54,38 @@ void SerialSubsystem::loop()
       Serial.println("Cleared");
     }
   }
+  
+  // save the current ms step count
+  currMillis = millis();
+
+  // if curr - prev is greater or equal to blink interval, blink
+  if (currMillis - prevMillis >= updateInterval)
+  {
+    prevMillis = currMillis;
+    printJoystickData();
+  }
+
 }
 
 void SerialSubsystem::printKey(char key)
 {
   Serial.print("Received keypad character: ");
   Serial.println(key);
+}
+
+void SerialSubsystem::setJoystickData(bool button, int x, int y)
+{
+  myButton = button;
+  myX = x;
+  myY = y;
+}
+
+void SerialSubsystem::printJoystickData()
+{
+  Serial.print("Joystick Button: ");
+  Serial.print(myButton);
+  Serial.print(", X-axis: ");
+  Serial.print(myX);
+  Serial.print(", Y-axis: ");
+  Serial.println(myY);
 }
