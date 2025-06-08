@@ -44,11 +44,32 @@ const unsigned char LedMatrixSubsystem::N8[] =  {B01110000,B10001000,B10001000,B
 const unsigned char LedMatrixSubsystem::N9[] =  {B01110000,B10001000,B10001000,B01111000,B00001000,B00010000,B01100000,B00000000};
 const unsigned char LedMatrixSubsystem::ALL[] = {B11111111,B11111111,B11111111,B11111111,B11111111,B11111111,B11111111,B11111111};
 
+//RIGHT
+const unsigned char LedMatrixSubsystem::PACMAN_R0[] ={B00011000,B00111100,B01111110,B01100000,B01111110,B01111110,B00111100,B00011000};
+const unsigned char LedMatrixSubsystem::PACMAN_R1[] ={B00011000,B00111100,B01111110,B01100000,B01100000,B01111110,B00111100,B00011000};
+const unsigned char LedMatrixSubsystem::PACMAN_R2[] ={B00011000,B00111110,B01110000,B01100000,B01100000,B01110000,B00111110,B00011000};
+const unsigned char LedMatrixSubsystem::PACMAN_R3[] ={B00011000,B00111100,B01111110,B01100000,B01100000,B01111110,B00111100,B00011000};
+//LEFT
+const unsigned char LedMatrixSubsystem::PACMAN_L0[] ={B00011000,B00111100,B01111110,B00000110,B01111110,B01111110,B00111100,B00011000};
+const unsigned char LedMatrixSubsystem::PACMAN_L1[] ={B00011000,B00111100,B01111110,B00000110,B00000110,B01111110,B00111100,B00011000};
+const unsigned char LedMatrixSubsystem::PACMAN_L2[] ={B00011000,B01111100,B00001110,B00000110,B00000110,B00001110,B01111100,B00011000};
+const unsigned char LedMatrixSubsystem::PACMAN_L3[] ={B00011000,B00111100,B01111110,B00000110,B00000110,B01111110,B00111100,B00011000};
+//UP
+const unsigned char LedMatrixSubsystem::PACMAN_U0[] ={B00000000,B00101100,B01101110,B11101111,B11101111,B01111110,B00111100,B00000000};
+const unsigned char LedMatrixSubsystem::PACMAN_U1[] ={B00000000,B00100100,B01100110,B11100111,B11100111,B01111110,B00111100,B00000000};
+const unsigned char LedMatrixSubsystem::PACMAN_U2[] ={B00000000,B01000010,B01000010,B11000011,B11100111,B01111110,B00111100,B00000000};
+const unsigned char LedMatrixSubsystem::PACMAN_U3[] ={B00000000,B00100100,B01100110,B11100111,B11100111,B01111110,B00111100,B00000000};
+//DOWN
+const unsigned char LedMatrixSubsystem::PACMAN_D0[] ={B00000000,B00111100,B01111110,B11101111,B11101111,B01101110,B00101100,B00000000};
+const unsigned char LedMatrixSubsystem::PACMAN_D1[] ={B00000000,B00111100,B01111110,B11100111,B11100111,B01100110,B00100100,B00000000};
+const unsigned char LedMatrixSubsystem::PACMAN_D2[] ={B00000000,B00111100,B01111110,B11100111,B11000011,B01000010,B01000010,B00000000};
+const unsigned char LedMatrixSubsystem::PACMAN_D3[] ={B00000000,B00111100,B01111110,B11100111,B11100111,B01100110,B00100100,B00000000};
+
 // <<constructor>>
 LedMatrixSubsystem::LedMatrixSubsystem()
 {
   /* we always wait a bit between updates of the display */
-  delaytime1=500;
+  delaytime1=100;
   delaytime2=50;
 
   prevMillis = 0;
@@ -56,6 +77,12 @@ LedMatrixSubsystem::LedMatrixSubsystem()
 
   currentValue = CLR;
   indexOfValue = 0;
+
+  myPacmanDirection = RIGHT;
+  myPacmanIndex = 0;
+  myPacmanIsMoving = false;
+
+  myMatrixOutput = VOLTAGE;
 }
 
 /*
@@ -241,7 +268,7 @@ void LedMatrixSubsystem::writeVoltageMatrix() {
   delay(delaytime1);
 }
 
-void LedMatrixSubsystem::updateToNextValue()
+void LedMatrixSubsystem::updateToNextTeamVoltage()
 {
   // Increment the character index
   indexOfValue++;
@@ -257,7 +284,6 @@ void LedMatrixSubsystem::updateToNextValue()
     case 1: currentValue = CLR; break;
     case 2: currentValue = ALL; break;
     case 3: currentValue = CLR; break;
-
     case 4: currentValue = T; break;
     case 5: currentValue = E; break;
     case 6: currentValue = A; break;
@@ -279,10 +305,64 @@ void LedMatrixSubsystem::updateToNextValue()
   }
 }
 
-void LedMatrixSubsystem::displayCurrentValue()
+void LedMatrixSubsystem::displayCurrentTeamVoltage()
 {
   displayValue(currentValue);
 }
+
+void LedMatrixSubsystem::setPacmanDirection(LedMatrixSubsystem::pacmanDirection direction)
+{
+  myPacmanDirection = direction;
+}
+
+void LedMatrixSubsystem::setPacmanIsMoving(bool isMoving) {
+  myPacmanIsMoving = isMoving;
+}
+
+void LedMatrixSubsystem::movePacman()
+{
+  if (!myPacmanIsMoving) {
+    return; // If Pacman is not moving, do nothing
+  }
+
+  // Update the Pacman's position based on the direction
+  myPacmanIndex++;
+
+  if (myPacmanIndex > 3) {
+    myPacmanIndex = 0; // Loop back to the first frame
+  }
+
+  // Display the new Pacman position
+  switch (myPacmanDirection) {
+    case RIGHT:
+      displayValue(myPacmanIndex == 0 ? PACMAN_R0 : (myPacmanIndex == 1 ? PACMAN_R1 : (myPacmanIndex == 2 ? PACMAN_R2 : PACMAN_R3)));
+      break;
+    case LEFT:
+      displayValue(myPacmanIndex == 0 ? PACMAN_L0 : (myPacmanIndex == 1 ? PACMAN_L1 : (myPacmanIndex == 2 ? PACMAN_L2 : PACMAN_L3)));
+      break;
+    case UP:
+      displayValue(myPacmanIndex == 0 ? PACMAN_U0 : (myPacmanIndex == 1 ? PACMAN_U1 : (myPacmanIndex == 2 ? PACMAN_U2 : PACMAN_U3)));
+      break;
+    case DOWN:
+      displayValue(myPacmanIndex == 0 ? PACMAN_D0 : (myPacmanIndex == 1 ? PACMAN_D1 : (myPacmanIndex == 2 ? PACMAN_D2 : PACMAN_D3)));
+      break;
+  }
+}
+
+void LedMatrixSubsystem::setMatrixOutput(LedMatrixSubsystem::matrixOutput output)
+{
+  myMatrixOutput = output;
+} 
+
+void LedMatrixSubsystem::nextMatrixOutput()
+{
+  // Cycle through the matrix outputs
+  if (myMatrixOutput == VOLTAGE) {
+    myMatrixOutput = PACMAN;
+  } else {
+    myMatrixOutput = VOLTAGE;
+  }
+} 
 
 // Call this in setup() function
 void LedMatrixSubsystem::setup()
@@ -296,6 +376,9 @@ void LedMatrixSubsystem::setup()
   lc.setIntensity(0,8);
   /* and clear the display */
   lc.clearDisplay(0);
+
+  // If playing pacman, display pacman
+  displayValue(PACMAN_R0);
 }
 
 // Call this in loop() function
@@ -311,9 +394,13 @@ void LedMatrixSubsystem::loop()
   if (currMillis - prevMillis >= delaytime1)
   {
     prevMillis = currMillis;
-    updateToNextValue();
+  
+    if(myMatrixOutput == VOLTAGE) {
+      updateToNextTeamVoltage();
+      displayCurrentTeamVoltage();
+    } else if (myMatrixOutput == PACMAN) {
+      movePacman();
+    }
   }
 
-  //display the value
-  displayCurrentValue();
 }
