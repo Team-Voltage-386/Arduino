@@ -18,8 +18,8 @@ public:
   void loop();
 
 private:
-  unsigned long prevBlinkMillis;
-  unsigned long currBlinkMillis;
+  unsigned long prevMillis;
+  unsigned long currMillis;
   unsigned long blinkInterval;
   bool blinkState;
 };

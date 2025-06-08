@@ -42,6 +42,7 @@ const unsigned char LedMatrixSubsystem::N6[] =  {B00110000,B01000000,B10000000,B
 const unsigned char LedMatrixSubsystem::N7[] =  {B11111000,B10001000,B00001000,B00010000,B00100000,B00100000,B00100000,B00000000};
 const unsigned char LedMatrixSubsystem::N8[] =  {B01110000,B10001000,B10001000,B01110000,B10001000,B10001000,B01110000,B00000000};
 const unsigned char LedMatrixSubsystem::N9[] =  {B01110000,B10001000,B10001000,B01111000,B00001000,B00010000,B01100000,B00000000};
+const unsigned char LedMatrixSubsystem::ALL[] = {B11111111,B11111111,B11111111,B11111111,B11111111,B11111111,B11111111,B11111111};
 
 // <<constructor>>
 LedMatrixSubsystem::LedMatrixSubsystem()
@@ -246,29 +247,34 @@ void LedMatrixSubsystem::updateToNextValue()
   indexOfValue++;
   
   // If we reach the end of the characters, loop back to the start
-  if (indexOfValue >= 17) {
+  if (indexOfValue >= 21) {
     indexOfValue = 0;
   }
 
   // Set the current value to the next character
   switch (indexOfValue) {
-    case 0: currentValue = T; break;
-    case 1: currentValue = E; break;
-    case 2: currentValue = A; break;
-    case 3: currentValue = M; break;
-    case 4: currentValue = CLR; break;
-    case 5: currentValue = V; break;
-    case 6: currentValue = O; break;
-    case 7: currentValue = L; break;
-    case 8: currentValue = T; break;
-    case 9: currentValue = A; break;
-    case 10: currentValue = G; break;
-    case 11: currentValue = E; break;
-    case 12: currentValue = CLR; break;
-    case 13: currentValue = N3; break;
-    case 14: currentValue = N8; break;
-    case 15: currentValue = N6; break;
+    case 0: currentValue = ALL; break;
+    case 1: currentValue = CLR; break;
+    case 2: currentValue = ALL; break;
+    case 3: currentValue = CLR; break;
+
+    case 4: currentValue = T; break;
+    case 5: currentValue = E; break;
+    case 6: currentValue = A; break;
+    case 7: currentValue = M; break;
+    case 8: currentValue = CLR; break;
+    case 9: currentValue = V; break;
+    case 10: currentValue = O; break;
+    case 11: currentValue = L; break;
+    case 12: currentValue = T; break;
+    case 13: currentValue = A; break;
+    case 14: currentValue = G; break;
+    case 15: currentValue = E; break;
     case 16: currentValue = CLR; break;
+    case 17: currentValue = N3; break;
+    case 18: currentValue = N8; break;
+    case 19: currentValue = N6; break;
+    case 20: currentValue = CLR; break;
     default: currentValue = LedMatrixSubsystem::CLR; break; // Default case to avoid uninitialized access
   }
 }

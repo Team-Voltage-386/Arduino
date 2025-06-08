@@ -90,6 +90,7 @@ private:
   static const unsigned char N7[];
   static const unsigned char N8[];
   static const unsigned char N9[];
+  static const unsigned char ALL[];
 
 };
 

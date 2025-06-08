@@ -8,8 +8,8 @@
 // <<constructor>>
 BlinkSubsystem::BlinkSubsystem()
 {
-  prevBlinkMillis = 0;
-  currBlinkMillis = 0;
+  prevMillis = 0;
+  currMillis = 0;
   blinkState = LOW;
   blinkInterval = 250;
 }
@@ -17,8 +17,8 @@ BlinkSubsystem::BlinkSubsystem()
 // <<constructor>>
 BlinkSubsystem::BlinkSubsystem(unsigned long interval)
 {
-  prevBlinkMillis = 0;
-  currBlinkMillis = 0;
+  prevMillis = 0;
+  currMillis = 0;
   blinkState = LOW;
   blinkInterval = interval;
 }
@@ -30,12 +30,12 @@ void BlinkSubsystem::setup() { pinMode(LED_BUILTIN, OUTPUT); }
 void BlinkSubsystem::loop()
 {
   // save the current ms step count
-  currBlinkMillis = millis();
+  currMillis = millis();
 
   // if curr - prev is greater or equal to blink interval, blink
-  if (currBlinkMillis - prevBlinkMillis >= blinkInterval)
+  if (currMillis - prevMillis >= blinkInterval)
   {
-    prevBlinkMillis = currBlinkMillis;
+    prevMillis = currMillis;
     blinkState = !blinkState;
     digitalWrite(LED_BUILTIN, blinkState); // Blink the LED
   }
