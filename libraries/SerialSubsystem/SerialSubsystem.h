@@ -14,10 +14,11 @@ class SerialSubsystem
 public:
   SerialSubsystem();
   SerialSubsystem(unsigned int baud);
-  void setup();
+  void setup(bool enableJoystick);  
   void loop();
   void printKey(char key);
   void setJoystickData(bool button, int x, int y);
+  void setJoystickDataEnable(bool enable);
   void printJoystickData();
 
 private:
@@ -28,6 +29,8 @@ private:
   unsigned long prevMillis;
   unsigned long currMillis;  
   unsigned long updateInterval;
+
+  bool enableJoystickData;
 
   bool myButton;
   unsigned int myX;

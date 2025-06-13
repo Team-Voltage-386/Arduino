@@ -25,7 +25,7 @@ JoystickSubsystem::JoystickData joystickData;
 void setup()
 {
   m_blink.setup();  // setup the LED blink subsystem
-  m_serial.setup(); // setup the serial subsystem
+  m_serial.setup(true); // setup the serial subsystem (with joystick data enabled)
   m_ledmat.setup(); // setup the LED matrix subsystem
   m_keypad.setup(); // set the keypad subsystem
   m_joystick.setup(); // setup the joystick subsystem
