@@ -25,6 +25,8 @@ void setup()
   m_ledmat.setup(); // setup the LED matrix subsystem
   m_keypad.setup(); // set the keypad subsystem
   m_joystick.setup(); // setup the joystick subsystem
+
+  m_ledmat.nextMatrixOutput(); // skip to PACMAN output
 }
 
 char keypadKey;
@@ -34,8 +36,13 @@ void loop()
   m_blink.loop();  // execute the blink loop
   m_ledmat.loop(); // execute the LED matrix loop
   m_keypad.loop(); // execute the keypad loop
+  m_joystick.loop(); // execute the joystick loop
 
   joystickData = m_joystick.getData(); // get the joystick data
+
+  if(joystickData.button == 0) {
+    m_ledmat.nextMatrixOutput();
+  }
 
   if (joystickData.x > 750) {
     m_ledmat.setPacmanIsMoving(true); // set pacman is moving to true
@@ -53,12 +60,6 @@ void loop()
   else {
     m_ledmat.setPacmanIsMoving(false); // set pacman is moving to false
   }
-
-  if(joystickData.button == 0) {
-    m_ledmat.nextMatrixOutput();
-  }
-
-  m_joystick.loop(); // execute the joystick loop
 
   m_serial.setJoystickData(joystickData.button, joystickData.x, joystickData.y); // print the joystick data to serial
   m_serial.loop(); // execute the serial loop
