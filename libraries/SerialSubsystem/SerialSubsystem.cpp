@@ -6,14 +6,32 @@
 #include <SerialSubsystem.h>
 
 // <<constructor>>
-SerialSubsystem::SerialSubsystem() { baudRate = 9600; }
+SerialSubsystem::SerialSubsystem() { 
+  baudRate = 9600; 
+
+  myButton = false;
+  myX = 0;  
+  myY = 0;
+
+  prevMillis = 0;
+  currMillis = 0;
+  updateInterval = 1000; // Default update interval
+  enableJoystickData = false;
+}
 
 // <<constructor>>
-SerialSubsystem::SerialSubsystem(unsigned int baud) { baudRate = baud; }
+SerialSubsystem::SerialSubsystem(unsigned int baud) { 
+  baudRate = baud; 
+  prevMillis = 0;
+  currMillis = 0;
+  updateInterval = 1000; // Default update interval
+  enableJoystickData = false;
+}
 
 // Call this in setup() function
-void SerialSubsystem::setup()
+void SerialSubsystem::setup(bool enableJoystick)
 {
+  enableJoystickData = enableJoystick;
   Serial.begin(baudRate);
 
   while (!Serial)
@@ -39,10 +57,56 @@ void SerialSubsystem::loop()
       Serial.println("Cleared");
     }
   }
+  
+  // save the current ms step count
+  currMillis = millis();
+
+  // if curr - prev is greater or equal to blink interval, blink
+  if (currMillis - prevMillis >= updateInterval)
+  {
+    prevMillis = currMillis;
+
+    // only print joystick data if enabled
+    if(enableJoystickData == true)
+    {
+      printJoystickData();
+    }
+  }
+}
+
+void SerialSubsystem::setJoystickDataEnable(bool enable)
+{
+  enableJoystickData = enable;
+
+  if (enable)
+  {
+    Serial.println("Joystick data enabled.");
+  }
+  else
+  {
+    Serial.println("Joystick data disabled.");
+  }
 }
 
 void SerialSubsystem::printKey(char key)
 {
   Serial.print("Received keypad character: ");
   Serial.println(key);
+}
+
+void SerialSubsystem::setJoystickData(bool button, int x, int y)
+{
+  myButton = button;
+  myX = x;
+  myY = y;
+}
+
+void SerialSubsystem::printJoystickData()
+{
+  Serial.print("Joystick Button: ");
+  Serial.print(myButton);
+  Serial.print(", X-axis: ");
+  Serial.print(myX);
+  Serial.print(", Y-axis: ");
+  Serial.println(myY);
 }
