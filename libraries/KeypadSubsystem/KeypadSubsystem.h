@@ -16,7 +16,6 @@ class KeypadSubsystem
 {
 public:
   KeypadSubsystem();
-  KeypadSubsystem(unsigned int port);
   void setup();
   void loop();
   char getKey();
