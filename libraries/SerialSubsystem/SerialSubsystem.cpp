@@ -61,7 +61,7 @@ void SerialSubsystem::loop()
   // save the current ms step count
   currMillis = millis();
 
-  // if curr - prev is greater or equal to blink interval, blink
+  // if curr - prev is greater or equal to interval, take action
   if (currMillis - prevMillis >= updateInterval)
   {
     prevMillis = currMillis;

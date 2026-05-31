@@ -12,6 +12,7 @@ BlinkSubsystem::BlinkSubsystem()
   currMillis = 0;
   blinkState = LOW;
   blinkInterval = 250;
+  blinkLED = 13;
 }
 
 // <<constructor>>
@@ -21,10 +22,23 @@ BlinkSubsystem::BlinkSubsystem(unsigned long interval)
   currMillis = 0;
   blinkState = LOW;
   blinkInterval = interval;
+  blinkLED = 13;  
+}
+
+// <<constructor>>
+BlinkSubsystem::BlinkSubsystem(int led, unsigned long interval)
+{
+  prevMillis = 0;
+  currMillis = 0;
+  blinkState = LOW;
+  blinkInterval = interval;
+  blinkLED = led;  
 }
 
 // Call this in setup() function
-void BlinkSubsystem::setup() { pinMode(LED_BUILTIN, OUTPUT); }
+void BlinkSubsystem::setup() { 
+   pinMode(blinkLED, OUTPUT); 
+}
 
 // Call this in loop() function
 void BlinkSubsystem::loop()
@@ -37,6 +51,6 @@ void BlinkSubsystem::loop()
   {
     prevMillis = currMillis;
     blinkState = !blinkState;
-    digitalWrite(LED_BUILTIN, blinkState); // Blink the LED
+    digitalWrite(blinkLED, blinkState); // Blink the LED
   }
 }

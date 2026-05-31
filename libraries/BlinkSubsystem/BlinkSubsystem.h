@@ -14,6 +14,7 @@ class BlinkSubsystem
 public:
   BlinkSubsystem();
   BlinkSubsystem(unsigned long interval);
+  BlinkSubsystem(int led, unsigned long interval);
   void setup();
   void loop();
 
@@ -22,6 +23,7 @@ private:
   unsigned long currMillis;
   unsigned long blinkInterval;
   bool blinkState;
+  int blinkLED;
 };
 
 #endif
