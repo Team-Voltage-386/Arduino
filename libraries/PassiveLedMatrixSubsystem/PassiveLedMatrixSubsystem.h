@@ -7,7 +7,6 @@
 #define PASSIVELEDMATRIXSUBSYSTEM_H
 
 #include "Arduino.h"
-#include "LedControl.h"
 
 class PassiveLedMatrixSubsystem
 {
@@ -20,15 +19,16 @@ public:
   };
 
   enum matrixOutput {
+    TEST,
     VOLTAGE,
     PACMAN,
     SPRITE
   };  
 
+  PassiveLedMatrixSubsystem();
   void updateToNextTeamVoltage();
   void displayCurrentTeamVoltage();
   void displayValue(const unsigned char value[], unsigned int displayTime);
-  PassiveLedMatrixSubsystem();
   void writeArduinoOnMatrix();
   void writeVoltageOnMatrix();
   void initPassivePins();
@@ -46,19 +46,8 @@ public:
   void moveSprite();
 
   void setMatrixOutput(matrixOutput output);
-  void nextMatrixOutput();
 
 private:
-  /*
-  Now we need a LedControl to work with.
-  ***** These pin numbers will probably not work with your hardware *****
-  pin 12 is connected to the DataIn 
-  pin 11 is connected to LOAD(CS)
-  pin 10 is connected to the CLK 
-  We have only a single MAX72XX.
-  */
-  LedControl lc=LedControl(12,10,11,1);
-
   /* we always wait a bit between updates of the display */
   unsigned long delaytime1;
   unsigned long delaytime2;
@@ -82,6 +71,10 @@ private:
 
   // default character display time
   static const unsigned int defaultDisplayTime;
+
+  // test row and column
+  unsigned int testRow;
+  unsigned int testCol;
 
   //https://stackoverflow.com/questions/55090907/arduino-8x8-led-matrix-letters
   /*
