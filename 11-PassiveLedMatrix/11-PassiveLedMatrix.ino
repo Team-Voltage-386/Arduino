@@ -50,7 +50,7 @@ void loop() {
 
   if(m_ledMatrix.getJoystickMotionEnabled())
   {
-    //Serial.println("Joystick Data - Button: " + String(joystickData.button) + ", X: " + String(joystickData.x) + ", Y: " + String(joystickData.y));
+    Serial.println("Joystick Data - Button: " + String(joystickData.button) + ", X: " + String(joystickData.x) + ", Y: " + String(joystickData.y));
 
     if (joystickData.x > 750) {
       m_ledMatrix.setSpriteIsMoving(true); // set pacman is moving to true
