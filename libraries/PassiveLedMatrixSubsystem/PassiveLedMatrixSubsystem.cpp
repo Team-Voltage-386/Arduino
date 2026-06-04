@@ -235,32 +235,36 @@ void PassiveLedMatrixSubsystem::testPassivePins()
 
   // Cycle col HIGH and ROW lOW for each LED in the matrix to test if the correct LED turns on
   // Set all other cols LOW and all other rows HIGH to ensure only the target LED turns on
-  for (int row = 0; row < 8; row++) {
-    for (int col = 0; col < 8; col++) {
-      // Set all columns LOW and all rows HIGH
-      for (int c = 0; c < 8; c++) {
-        digitalWrite(pCol[c], LOW);
-      }
-      for (int r = 0; r < 8; r++) {
-        digitalWrite(pRow[r], HIGH);
-      }
 
-      // Set the target column HIGH and the target row LOW to turn on the LED
-      digitalWrite(pCol[col], HIGH);
-      digitalWrite(pRow[row], LOW);
-
-      snprintf(buffer, sizeof(buffer), "Testing LED at row %d, column %d, rowPin %d, colPin %d", row, col, pRow[row], pCol[col]);
-      Serial.println(buffer);
-
-      delay(500); // Wait a bit to visually confirm the LED is on
-
-      // Set the target column LOW to turn off the LED
-      digitalWrite(pCol[col], LOW);
-    }
+  // Set all columns LOW and all rows HIGH
+  for (int c = 0; c < 8; c++) {
+    digitalWrite(pCol[c], LOW);
+  }
+  for (int r = 0; r < 8; r++) {
+    digitalWrite(pRow[r], HIGH);
   }
 
-  snprintf(buffer, sizeof(buffer), "Finished testing passive pins.");
+  // Set the target column HIGH and the target row LOW to turn on the LED
+  digitalWrite(pCol[testCol], HIGH);
+  digitalWrite(pRow[testRow], LOW);
+
+  snprintf(buffer, sizeof(buffer), "Testing LED at row %d, column %d, rowPin %d, colPin %d", testRow, testCol, pRow[testRow], pCol[testCol]);
   Serial.println(buffer);
+
+  delay(500); // Wait a bit to visually confirm the LED is on
+
+  // Set the target column LOW to turn off the LED
+  digitalWrite(pCol[testCol], LOW);
+
+  // Move to the next LED
+  testCol++;
+  if (testCol >= 8) {
+    testCol = 0;
+    testRow++;
+    if (testRow >= 8) {
+      testRow = 0;
+    }
+  }
 }
 
 void PassiveLedMatrixSubsystem::testPassivePinsManually()
@@ -513,16 +517,6 @@ void PassiveLedMatrixSubsystem::setMatrixOutput(matrixOutput output)
   myMatrixOutput = output;
 } 
 
-void PassiveLedMatrixSubsystem::nextMatrixOutput()
-{
-  // Cycle through the matrix outputs
-  if (myMatrixOutput == VOLTAGE) {
-    myMatrixOutput = PACMAN;
-  } else {
-    myMatrixOutput = VOLTAGE;
-  }
-} 
-
 // Initialize Passive Pins
 void PassiveLedMatrixSubsystem::initPassivePins() {
     for (int thisPin = 0; thisPin < 8; thisPin++) {  
@@ -563,7 +557,9 @@ void PassiveLedMatrixSubsystem::loop()
 
     checkWASD();
     
-    if(myMatrixOutput == VOLTAGE) {
+    if(myMatrixOutput == TEST) {
+      testPassivePins();
+    } else if(myMatrixOutput == VOLTAGE) {
       updateToNextTeamVoltage();
       displayCurrentTeamVoltage();
     } else if (myMatrixOutput == PACMAN) {
