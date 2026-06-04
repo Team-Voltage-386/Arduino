@@ -20,6 +20,7 @@ public:
   JoystickSubsystem();
   JoystickData getData();
   void setup();
+  void setup(bool hasButton);
   void loop();
 
 private:
@@ -29,6 +30,8 @@ private:
   static const int SW_pin; // digital pin connected to switch output
   static const int X_pin; // analog pin connected to X output
   static const int Y_pin; // analog pin connected to Y output  
+
+  bool buttonEnabled; // Track if button is enabled
 };
 
 #endif

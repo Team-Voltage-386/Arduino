@@ -12,7 +12,7 @@
 class PassiveLedMatrixSubsystem
 {
 public:
-  enum pacmanDirection {
+  enum spriteDirection {
     RIGHT,
     LEFT,
     UP,
@@ -22,7 +22,9 @@ public:
   enum matrixOutput {
     VOLTAGE,
     PACMAN,
-    SPRITE
+    SPRITE,
+    PACMAN_WITH_JOYSTICK,
+    SPRITE_WITH_JOYSTICK
   };  
 
   void updateToNextTeamVoltage();
@@ -38,8 +40,8 @@ public:
   void setup();
   void loop();
 
-  void setPacmanDirection(pacmanDirection direction);
-  void setPacmanIsMoving(bool isMoving);
+  void setSpriteDirection(spriteDirection direction);
+  void setSpriteIsMoving(bool isMoving);
   void movePacman();
   void checkWASD();
 
@@ -47,6 +49,8 @@ public:
 
   void setMatrixOutput(matrixOutput output);
   void nextMatrixOutput();
+
+  bool getJoystickMotionEnabled();
 
 private:
   /*
@@ -82,6 +86,9 @@ private:
 
   // default character display time
   static const unsigned int defaultDisplayTime;
+
+  // Track if joystick motion is enabled
+  bool joystickMotionEnabled;
 
   //https://stackoverflow.com/questions/55090907/arduino-8x8-led-matrix-letters
   /*
@@ -130,9 +137,9 @@ private:
   static const unsigned char TEST0[];  
   static const unsigned char TEST1[];    
 
-  pacmanDirection myPacmanDirection;
+  spriteDirection mySpriteDirection;
   unsigned int myPacmanIndex;
-  bool myPacmanIsMoving;
+  bool mySpriteIsMoving;
   unsigned int mySpriteIndex;
 
   //RIGHT
