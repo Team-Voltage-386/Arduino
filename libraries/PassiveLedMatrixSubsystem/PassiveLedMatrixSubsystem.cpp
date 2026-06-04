@@ -119,16 +119,16 @@ PassiveLedMatrixSubsystem::PassiveLedMatrixSubsystem()
   currentValue = CLR;
   indexOfValue = 0;
 
-  myPacmanDirection = RIGHT;
+  mySpriteDirection = RIGHT;
   myPacmanIndex = 0;
-  myPacmanIsMoving = false;
+  mySpriteIsMoving = false;
 
   mySpriteIndex = 0;
 
   myMatrixOutput = VOLTAGE;
 
-  testRow = 0;
-  testCol = 0;
+  joystickMotionEnabled = false;
+
 }
 
 /*
@@ -382,13 +382,13 @@ void PassiveLedMatrixSubsystem::displayCurrentTeamVoltage()
   displayValue(currentValue, defaultDisplayTime);
 }
 
-void PassiveLedMatrixSubsystem::setPacmanDirection(pacmanDirection direction)
+void PassiveLedMatrixSubsystem::setSpriteDirection(spriteDirection direction)
 {
-  myPacmanDirection = direction;
+  mySpriteDirection = direction;
 }
 
-void PassiveLedMatrixSubsystem::setPacmanIsMoving(bool isMoving) {
-  myPacmanIsMoving = isMoving;
+void PassiveLedMatrixSubsystem::setSpriteIsMoving(bool isMoving) {
+  mySpriteIsMoving = isMoving;
 }
 
 void PassiveLedMatrixSubsystem::checkWASD()
@@ -397,44 +397,54 @@ void PassiveLedMatrixSubsystem::checkWASD()
     char inputChar = Serial.read();
     switch (inputChar) {
       case '0':
-        setPacmanIsMoving(false);
-        setMatrixOutput(TEST);
-        testRow = 0;
-        testCol = 0;
-        Serial.println("Received input: 0, switching to TEST");
-        break;
-      case '1':
-        setPacmanIsMoving(false);
+        setSpriteIsMoving(false);
         setMatrixOutput(VOLTAGE);
-        Serial.println("Received input: 1, switching to VOLTAGE");
+        joystickMotionEnabled = false;
+        Serial.println("Received input: 0, switching to VOLTAGE");
+        break;
+
+      case '1':
+        setSpriteIsMoving(true);
+        setMatrixOutput(PACMAN);
+        joystickMotionEnabled = false;
+        Serial.println("Received input: 1, switching to PACMAN");
         break;
 
       case '2':
-        setPacmanIsMoving(true);
-        setMatrixOutput(PACMAN);
-        Serial.println("Received input: 2, switching to PACMAN");
+        setSpriteIsMoving(true);
+        setMatrixOutput(SPRITE);
+        joystickMotionEnabled = false;
+        Serial.println("Received input: 2, switching to SPRITE");
         break;
 
       case '3':
-        setPacmanIsMoving(true);
-        setMatrixOutput(SPRITE);
-        Serial.println("Received input: 3, switching to SPRITE");
+        setSpriteIsMoving(false);
+        setMatrixOutput(PACMAN_WITH_JOYSTICK);
+        joystickMotionEnabled = true;
+        Serial.println("Received input: 3, switching to PACMAN with JOYSTICK control");
+        break;        
+
+      case '4':
+        setSpriteIsMoving(false);
+        setMatrixOutput(SPRITE_WITH_JOYSTICK);
+        joystickMotionEnabled = true;
+        Serial.println("Received input: 4, switching to SPRITE with JOYSTICK control");
         break;
 
       case 'w':
-        setPacmanDirection(UP);
+        setSpriteDirection(UP);
         Serial.println("Received input: w, setting direction to UP");
         break;
       case 'a':
-        setPacmanDirection(LEFT);
+        setSpriteDirection(LEFT);
         Serial.println("Received input: a, setting direction to LEFT");
         break;
       case 's':
-        setPacmanDirection(DOWN);
+        setSpriteDirection(DOWN);
         Serial.println("Received input: s, setting direction to DOWN");
         break;
       case 'd':
-        setPacmanDirection(RIGHT);
+        setSpriteDirection(RIGHT);
         Serial.println("Received input: d, setting direction to RIGHT");
         break;
     }
@@ -443,7 +453,7 @@ void PassiveLedMatrixSubsystem::checkWASD()
 
 void PassiveLedMatrixSubsystem::movePacman()
 {
-  if (!myPacmanIsMoving) {
+  if (!mySpriteIsMoving) {
     return; // If Pacman is not moving, do nothing
   }
 
@@ -455,7 +465,7 @@ void PassiveLedMatrixSubsystem::movePacman()
   }
 
   // Display the new Pacman position
-  switch (myPacmanDirection) {
+  switch (mySpriteDirection) {
     case RIGHT:
       displayValue(myPacmanIndex == 0 ? PACMAN_R0 : (myPacmanIndex == 1 ? PACMAN_R1 : (myPacmanIndex == 2 ? PACMAN_R2 : PACMAN_R3)), defaultDisplayTime);
       break;
@@ -473,6 +483,11 @@ void PassiveLedMatrixSubsystem::movePacman()
 
 void PassiveLedMatrixSubsystem::moveSprite()
 {
+
+  if (!mySpriteIsMoving) {
+    return; // If Sprite is not moving, do nothing
+  }
+
   // Update the Pacman's position based on the direction
   mySpriteIndex++;
 
@@ -481,7 +496,7 @@ void PassiveLedMatrixSubsystem::moveSprite()
   }
 
   // Display the new Sprite position
-  switch (myPacmanDirection) {
+  switch (mySpriteDirection) {
     case RIGHT:
       displayValue(mySpriteIndex == 0 ? SPRITE_R0 : (mySpriteIndex == 1 ? SPRITE_R1 : (mySpriteIndex == 2 ? SPRITE_R2 : SPRITE_R3)), defaultDisplayTime);
       break;
@@ -510,6 +525,10 @@ void PassiveLedMatrixSubsystem::initPassivePins() {
       pinMode(pRow[thisPin], OUTPUT);
       digitalWrite(pRow[thisPin], LOW);    
     }
+}
+
+bool PassiveLedMatrixSubsystem::getJoystickMotionEnabled() {
+  return joystickMotionEnabled;
 }
 
 // Call this in setup() function
@@ -547,6 +566,10 @@ void PassiveLedMatrixSubsystem::loop()
       movePacman();
     } else if (myMatrixOutput == SPRITE) {
       moveSprite();
+    } else if (myMatrixOutput == PACMAN_WITH_JOYSTICK) {
+      // DO NOTHING, CONTROLLED VIA MAIN PROGRAM WITH JOYSTICK INPUT
+    } else if (myMatrixOutput == SPRITE_WITH_JOYSTICK) {
+      // DO NOTHING, CONTROLLED VIA MAIN PROGRAM WITH JOYSTICK INPUT
     }
   }
 }
